@@ -4,7 +4,7 @@ export interface ApiKey {
   type: string;
   usage: number;
   key: string;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface PlanSummaryCardProps {
@@ -33,6 +33,7 @@ export interface EditApiKeyModalProps {
   onClose: () => void;
   onSave: () => void;
   keyName: string;
+  setKeyName: (v: string) => void;
   keyType: string;
   limitUsage: boolean;
   setLimitUsage: (v: boolean) => void;

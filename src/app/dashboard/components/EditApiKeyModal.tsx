@@ -1,11 +1,12 @@
 import React from "react";
-import { EditApiKeyModalProps } from './types';
+import { EditApiKeyModalProps } from '../types/index';
 
 const EditApiKeyModal: React.FC<EditApiKeyModalProps> = ({
   open,
   onClose,
   onSave,
   keyName,
+  setKeyName,
   keyType,
   limitUsage,
   setLimitUsage,
@@ -24,9 +25,9 @@ const EditApiKeyModal: React.FC<EditApiKeyModalProps> = ({
           <label className="block text-sm font-semibold text-gray-800 mb-1">Key Name <span className="text-gray-500 font-normal">— A unique name to identify this key</span></label>
           <input
             type="text"
-            className="w-full px-3 py-2 border border-gray-200 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 placeholder-gray-400"
             value={keyName}
-            disabled
+            onChange={e => setKeyName(e.target.value)}
           />
         </div>
         <div className="mb-6">

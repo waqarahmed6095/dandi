@@ -1,5 +1,5 @@
 import React from "react";
-import { PlanSummaryCardProps } from './types';
+import { PlanSummaryCardProps } from '../types/index';
 
 const PlanSummaryCard: React.FC<PlanSummaryCardProps> = ({ currentPlan, usage, usageLimit, usagePercent }) => (
   <div className="mb-8 rounded-2xl shadow-lg p-6 relative overflow-hidden" style={{background: 'linear-gradient(90deg, #f7bfa5 0%, #b6c6f7 100%)'}}>

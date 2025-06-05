@@ -1,11 +1,11 @@
 'use client';
 
-import PlanSummaryCard from './PlanSummaryCard';
-import ApiKeysTable from './ApiKeysTable';
-import { maskKey } from './utils';
-import CreateApiKeyModal from './CreateApiKeyModal';
-import EditApiKeyModal from './EditApiKeyModal';
-import { useApiKeys } from './useApiKeys';
+import PlanSummaryCard from './components/PlanSummaryCard';
+import ApiKeysTable from './components/ApiKeysTable';
+import { maskKey } from './lib/utils';
+import CreateApiKeyModal from './components/CreateApiKeyModal';
+import EditApiKeyModal from './components/EditApiKeyModal';
+import { useApiKeys } from './hooks/useApiKeys';
 import { FiPlus } from 'react-icons/fi';
 
 export default function Dashboard() {
@@ -55,7 +55,8 @@ export default function Dashboard() {
         open={showEditModal && !!editModal.key}
         onClose={() => setShowEditModal(false)}
         onSave={handleEditModalSave}
-        keyName={editModal.key?.name || ''}
+        keyName={editModal.keyName}
+        setKeyName={v => setEditModal(m => ({ ...m, keyName: v }))}
         keyType={editModal.key?.type || ''}
         limitUsage={editModal.limitUsage}
         setLimitUsage={v => setEditModal(m => ({ ...m, limitUsage: v }))}
