@@ -28,7 +28,6 @@ export default function Dashboard() {
     openEditModal,
     handleEditModalSave,
     toggleShowKey,
-    copyKey,
     handleCopyKey,
   } = useApiKeys();
 

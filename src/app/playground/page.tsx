@@ -28,7 +28,7 @@ export default function Playground() {
     }
     setLoading(true);
     // Validate API key in Supabase (no .single())
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("api_keys")
       .select("id")
       .eq("key", apiKey)

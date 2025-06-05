@@ -1,5 +1,4 @@
 import React from "react";
-import { FiEye, FiCopy, FiEdit2, FiTrash2, FiEyeOff } from 'react-icons/fi';
 import { ApiKey } from '../types/index';
 import ApiKeyRow from './rows/ApiKeyRow';
 

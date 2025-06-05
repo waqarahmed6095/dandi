@@ -1,17 +1,17 @@
 import React from 'react';
 import CreateApiKeyModal from '../components/CreateApiKeyModal';
 import EditApiKeyModal from '../components/EditApiKeyModal';
+import { CreateApiKeyModalProps, EditApiKeyModalProps } from '../types';
 
 interface ApiKeyModalsProps {
   showModal: boolean;
   setShowModal: (v: boolean) => void;
-  createModal: any;
-  setCreateModal: (v: any) => void;
+  createModal: Omit<CreateApiKeyModalProps, 'open' | 'onClose' | 'onCreate'>;
+  setCreateModal: (v: Omit<CreateApiKeyModalProps, 'open' | 'onClose' | 'onCreate'>) => void;
   showEditModal: boolean;
   setShowEditModal: (v: boolean) => void;
-  editModal: any;
-  setEditModal: (v: any) => void;
-  handleCreateModal: () => void;
+  editModal: Omit<EditApiKeyModalProps, 'open' | 'onClose' | 'onSave'> & { key?: { type?: string } };
+  setEditModal: (v: Omit<EditApiKeyModalProps, 'open' | 'onClose' | 'onSave'> & { key?: { type?: string } }) => void;
   handleModalCreate: () => void;
   handleEditModalSave: () => void;
 }
@@ -25,7 +25,6 @@ const ApiKeyModals: React.FC<ApiKeyModalsProps> = ({
   setShowEditModal,
   editModal,
   setEditModal,
-  handleCreateModal,
   handleModalCreate,
   handleEditModalSave,
 }) => (
@@ -35,27 +34,27 @@ const ApiKeyModals: React.FC<ApiKeyModalsProps> = ({
       onClose={() => setShowModal(false)}
       onCreate={handleModalCreate}
       keyName={createModal.keyName}
-      setKeyName={v => setCreateModal((m: any) => ({ ...m, keyName: v }))}
+      setKeyName={v => setCreateModal({ ...createModal, keyName: v })}
       keyType={createModal.keyType}
-      setKeyType={v => setCreateModal((m: any) => ({ ...m, keyType: v }))}
+      setKeyType={v => setCreateModal({ ...createModal, keyType: v })}
       limitUsage={createModal.limitUsage}
-      setLimitUsage={v => setCreateModal((m: any) => ({ ...m, limitUsage: v }))}
+      setLimitUsage={v => setCreateModal({ ...createModal, limitUsage: v })}
       usageLimit={createModal.usageLimit}
-      setUsageLimit={v => setCreateModal((m: any) => ({ ...m, usageLimit: v }))}
+      setUsageLimit={v => setCreateModal({ ...createModal, usageLimit: v })}
     />
     <EditApiKeyModal
       open={showEditModal && !!editModal.key}
       onClose={() => setShowEditModal(false)}
       onSave={handleEditModalSave}
       keyName={editModal.keyName}
-      setKeyName={v => setEditModal((m: any) => ({ ...m, keyName: v }))}
+      setKeyName={v => setEditModal({ ...editModal, keyName: v })}
       keyType={editModal.key?.type || ''}
       limitUsage={editModal.limitUsage}
-      setLimitUsage={v => setEditModal((m: any) => ({ ...m, limitUsage: v }))}
+      setLimitUsage={v => setEditModal({ ...editModal, limitUsage: v })}
       usageLimit={editModal.usageLimit}
-      setUsageLimit={v => setEditModal((m: any) => ({ ...m, usageLimit: v }))}
+      setUsageLimit={v => setEditModal({ ...editModal, usageLimit: v })}
       pii={editModal.pii}
-      setPii={v => setEditModal((m: any) => ({ ...m, pii: v }))}
+      setPii={v => setEditModal({ ...editModal, pii: v })}
     />
   </>
 );

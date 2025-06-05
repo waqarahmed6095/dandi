@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { FiHome, FiSettings, FiBookOpen, FiCreditCard, FiUser, FiGlobe, FiChevronDown, FiMenu } from 'react-icons/fi';
+import { FiHome, FiSettings, FiBookOpen, FiCreditCard, FiGlobe, FiChevronDown, FiMenu } from 'react-icons/fi';
 import Image from 'next/image';
 import Link from 'next/link';
 
