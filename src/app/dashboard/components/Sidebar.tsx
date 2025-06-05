@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FiHome, FiSettings, FiBookOpen, FiCreditCard, FiUser, FiGlobe, FiChevronDown, FiMenu } from 'react-icons/fi';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Sidebar({ isVisible, setIsVisible }: { isVisible: boolean, setIsVisible: (v: boolean) => void }) {
   return (
@@ -34,9 +35,9 @@ export default function Sidebar({ isVisible, setIsVisible }: { isVisible: boolea
               <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-[#1a2233] font-medium bg-[#f3f6fa]">
                 <FiHome /> Overview
               </a>
-              <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-[#1a2233] font-medium hover:bg-[#f3f6fa]">
+              <Link href="/playground" className="flex items-center gap-3 px-4 py-2 rounded-lg text-[#1a2233] font-medium hover:bg-[#f3f6fa]">
                 <FiBookOpen /> API Playground
-              </a>
+              </Link>
               <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-[#1a2233] font-medium hover:bg-[#f3f6fa]">
                 <FiCreditCard /> Billing
               </a>
