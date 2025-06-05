@@ -1,22 +1,18 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { FiEye, FiCopy, FiEdit2, FiTrash2, FiPlus, FiEyeOff } from 'react-icons/fi';
 import PlanSummaryCard from './PlanSummaryCard';
 import ApiKeysTable from './ApiKeysTable';
 import { maskKey } from './utils';
 import CreateApiKeyModal from './CreateApiKeyModal';
 import EditApiKeyModal from './EditApiKeyModal';
-import { ApiKey } from './types';
 import { useApiKeys } from './useApiKeys';
+import { FiPlus } from 'react-icons/fi';
 
 export default function Dashboard() {
   // Replace all local state/handlers with the hook
   const {
     apiKeys,
-    setApiKeys,
     showKeyIds,
-    setShowKeyIds,
     showModal,
     setShowModal,
     createModal,

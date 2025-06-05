@@ -85,7 +85,7 @@ const CreateApiKeyModal: React.FC<CreateApiKeyModalProps> = ({
             onChange={e => setUsageLimit(e.target.value)}
           />
         </div>
-        <p className="text-xs text-gray-500 mb-6">* If the combined usage of all your keys exceeds your plan's limit, all requests will be rejected.</p>
+        <p className="text-xs text-gray-500 mb-6">* If the combined usage of all your keys exceeds your plan&apos;s limit, all requests will be rejected.</p>
         <div className="flex gap-4 justify-center">
           <button
             className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
