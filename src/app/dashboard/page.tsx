@@ -1,116 +1,110 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
-
-interface ApiKey {
-  id: string;
-  name: string;
-  key: string;
-  createdAt: string;
-}
+import { useState, useRef } from 'react';
+import { FiEye, FiCopy, FiEdit2, FiTrash2, FiPlus, FiEyeOff } from 'react-icons/fi';
+import PlanSummaryCard from './PlanSummaryCard';
+import ApiKeysTable from './ApiKeysTable';
+import { maskKey } from './utils';
+import CreateApiKeyModal from './CreateApiKeyModal';
+import EditApiKeyModal from './EditApiKeyModal';
+import { ApiKey } from './types';
+import { useApiKeys } from './useApiKeys';
 
 export default function Dashboard() {
-  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
-  const [showNewKeyForm, setShowNewKeyForm] = useState(false);
-  const [newKeyName, setNewKeyName] = useState('');
+  // Replace all local state/handlers with the hook
+  const {
+    apiKeys,
+    setApiKeys,
+    showKeyIds,
+    setShowKeyIds,
+    showModal,
+    setShowModal,
+    createModal,
+    setCreateModal,
+    showEditModal,
+    setShowEditModal,
+    editModal,
+    setEditModal,
+    handleCreateModal,
+    handleModalCreate,
+    deleteApiKey,
+    openEditModal,
+    handleEditModalSave,
+    toggleShowKey,
+    copyKey,
+  } = useApiKeys();
 
-  const generateApiKey = () => {
-    const newKey: ApiKey = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: newKeyName,
-      key: `sk-${Math.random().toString(36).substr(2, 32)}`,
-      createdAt: new Date().toISOString(),
-    };
-    setApiKeys([...apiKeys, newKey]);
-    setNewKeyName('');
-    setShowNewKeyForm(false);
-  };
-
-  const deleteApiKey = (id: string) => {
-    setApiKeys(apiKeys.filter(key => key.id !== id));
-  };
+  // Demo plan/usage data
+  const currentPlan = "Researcher";
+  const usage = 2;
+  const usageLimit = 1000;
+  const usagePercent = Math.min((usage / usageLimit) * 100, 100);
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold">API Keys Management</h1>
-          <button
-            onClick={() => setShowNewKeyForm(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Create New API Key
-          </button>
+    <div className="min-h-screen bg-[#f6f8fa] p-8">
+      <CreateApiKeyModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onCreate={handleModalCreate}
+        keyName={createModal.keyName}
+        setKeyName={v => setCreateModal(m => ({ ...m, keyName: v }))}
+        keyType={createModal.keyType}
+        setKeyType={v => setCreateModal(m => ({ ...m, keyType: v }))}
+        limitUsage={createModal.limitUsage}
+        setLimitUsage={v => setCreateModal(m => ({ ...m, limitUsage: v }))}
+        usageLimit={createModal.usageLimit}
+        setUsageLimit={v => setCreateModal(m => ({ ...m, usageLimit: v }))}
+      />
+      <EditApiKeyModal
+        open={showEditModal && !!editModal.key}
+        onClose={() => setShowEditModal(false)}
+        onSave={handleEditModalSave}
+        keyName={editModal.key?.name || ''}
+        keyType={editModal.key?.type || ''}
+        limitUsage={editModal.limitUsage}
+        setLimitUsage={v => setEditModal(m => ({ ...m, limitUsage: v }))}
+        usageLimit={editModal.usageLimit}
+        setUsageLimit={v => setEditModal(m => ({ ...m, usageLimit: v }))}
+        pii={editModal.pii}
+        setPii={v => setEditModal(m => ({ ...m, pii: v }))}
+      />
+      <div className="max-w-5xl mx-auto">
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold text-[#1a2233] mb-2">API Keys</h1>
+          <p className="text-gray-600 text-base">
+            The key is used to authenticate your requests. To learn more, see the documentation page.
+          </p>
         </div>
 
-        {showNewKeyForm && (
-          <div className="mb-8 p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Create New API Key</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Key Name
-                </label>
-                <input
-                  type="text"
-                  value={newKeyName}
-                  onChange={(e) => setNewKeyName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter a name for your API key"
-                />
-              </div>
-              <div className="flex gap-4">
-                <button
-                  onClick={generateApiKey}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Generate Key
-                </button>
-                <button
-                  onClick={() => setShowNewKeyForm(false)}
-                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Plan summary card */}
+        <PlanSummaryCard
+          currentPlan={currentPlan}
+          usage={usage}
+          usageLimit={usageLimit}
+          usagePercent={usagePercent}
+        />
 
-        <div className="space-y-4">
-          {apiKeys.map((apiKey) => (
-            <div
-              key={apiKey.id}
-              className="bg-white p-6 rounded-lg shadow-md"
+        {/* API Keys Table Card */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-700 opacity-80">API Keys</h2>
+            <button
+              onClick={handleCreateModal}
+              className="flex items-center gap-2 bg-[#f3f6fa] hover:bg-[#e2e8f0] text-[#1a2233] px-4 py-2 rounded-lg font-medium shadow border border-[#e2e8f0] transition-colors"
             >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-lg font-semibold">{apiKey.name}</h3>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Created: {new Date(apiKey.createdAt).toLocaleDateString()}
-                  </p>
-                  <div className="mt-2">
-                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
-                      {apiKey.key}
-                    </code>
-                  </div>
-                </div>
-                <button
-                  onClick={() => deleteApiKey(apiKey.id)}
-                  className="text-red-600 hover:text-red-800"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-
-          {apiKeys.length === 0 && (
-            <div className="text-center py-12 bg-white rounded-lg shadow-md">
-              <p className="text-gray-500">No API keys found. Create your first API key to get started.</p>
-            </div>
-          )}
+              <FiPlus />
+              New Key
+            </button>
+          </div>
+          <ApiKeysTable
+            apiKeys={apiKeys}
+            showKeyIds={showKeyIds}
+            maskKey={maskKey}
+            onToggleShowKey={toggleShowKey}
+            onCopyKey={copyKey}
+            onEdit={openEditModal}
+            onDelete={deleteApiKey}
+          />
         </div>
       </div>
     </div>
