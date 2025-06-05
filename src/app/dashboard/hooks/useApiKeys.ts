@@ -14,9 +14,13 @@ export function useApiKeys() {
   const [showModal, setShowModal] = useState(false);
   const [createModal, setCreateModal] = useState({
     keyName: '',
+    setKeyName: (v: string) => setCreateModal(prev => ({ ...prev, keyName: v })),
     keyType: 'dev',
+    setKeyType: (v: string) => setCreateModal(prev => ({ ...prev, keyType: v })),
     limitUsage: false,
+    setLimitUsage: (v: boolean) => setCreateModal(prev => ({ ...prev, limitUsage: v })),
     usageLimit: '',
+    setUsageLimit: (v: string) => setCreateModal(prev => ({ ...prev, usageLimit: v }))
   });
 
   // Edit modal state
@@ -51,7 +55,16 @@ export function useApiKeys() {
   // CRUD handlers
   const handleCreateModal = () => {
     setShowModal(true);
-    setCreateModal({ keyName: '', keyType: 'dev', limitUsage: false, usageLimit: '' });
+    setCreateModal({
+      keyName: '',
+      setKeyName: (v: string) => setCreateModal(prev => ({ ...prev, keyName: v })),
+      keyType: 'dev',
+      setKeyType: (v: string) => setCreateModal(prev => ({ ...prev, keyType: v })),
+      limitUsage: false,
+      setLimitUsage: (v: boolean) => setCreateModal(prev => ({ ...prev, limitUsage: v })),
+      usageLimit: '',
+      setUsageLimit: (v: string) => setCreateModal(prev => ({ ...prev, usageLimit: v }))
+    });
   };
   const handleModalCreate = async () => {
     setLoading(true);
