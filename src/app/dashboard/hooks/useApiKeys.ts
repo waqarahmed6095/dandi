@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ApiKey } from '../types/index';
+import { ApiKey, EditApiKeyModalProps, CreateApiKeyModalProps } from '../types/index';
 import { supabase } from '../lib/supabaseClient';
 import toast from 'react-hot-toast';
 
@@ -12,7 +12,7 @@ export function useApiKeys() {
 
   // Create modal state
   const [showModal, setShowModal] = useState(false);
-  const [createModal, setCreateModal] = useState({
+  const [createModal, setCreateModal] = useState<Omit<CreateApiKeyModalProps, 'open' | 'onClose' | 'onCreate'>>({
     keyName: '',
     setKeyName: (v: string) => setCreateModal(prev => ({ ...prev, keyName: v })),
     keyType: 'dev',
@@ -25,12 +25,17 @@ export function useApiKeys() {
 
   // Edit modal state
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editModal, setEditModal] = useState({
-    key: null as ApiKey | null,
+  const [editModal, setEditModal] = useState<Omit<EditApiKeyModalProps, 'open' | 'onClose' | 'onSave'> & { key?: ApiKey }>({
+    key: undefined,
     keyName: '',
+    setKeyName: (v: string) => setEditModal(prev => ({ ...prev, keyName: v })),
+    keyType: '',
     limitUsage: false,
+    setLimitUsage: (v: boolean) => setEditModal(prev => ({ ...prev, limitUsage: v })),
     usageLimit: '',
+    setUsageLimit: (v: string) => setEditModal(prev => ({ ...prev, usageLimit: v })),
     pii: false,
+    setPii: (v: boolean) => setEditModal(prev => ({ ...prev, pii: v }))
   });
 
   // Fetch API keys from Supabase on mount
@@ -105,7 +110,18 @@ export function useApiKeys() {
     setLoading(false);
   };
   const openEditModal = (apiKey: ApiKey) => {
-    setEditModal({ key: apiKey, keyName: apiKey.name, limitUsage: false, usageLimit: '', pii: false });
+    setEditModal({
+      key: apiKey,
+      keyName: apiKey.name,
+      setKeyName: (v: string) => setEditModal(prev => ({ ...prev, keyName: v })),
+      keyType: apiKey.type,
+      limitUsage: false,
+      setLimitUsage: (v: boolean) => setEditModal(prev => ({ ...prev, limitUsage: v })),
+      usageLimit: '',
+      setUsageLimit: (v: string) => setEditModal(prev => ({ ...prev, usageLimit: v })),
+      pii: false,
+      setPii: (v: boolean) => setEditModal(prev => ({ ...prev, pii: v }))
+    });
     setShowEditModal(true);
   };
   const handleEditModalSave = async () => {
