@@ -7,12 +7,9 @@ interface ApiKeyModalsProps {
   showModal: boolean;
   setShowModal: (v: boolean) => void;
   createModal: Omit<CreateApiKeyModalProps, 'open' | 'onClose' | 'onCreate'>;
-  setCreateModal: (v: Omit<CreateApiKeyModalProps, 'open' | 'onClose' | 'onCreate'>) => void;
   showEditModal: boolean;
   setShowEditModal: (v: boolean) => void;
   editModal: Omit<EditApiKeyModalProps, 'open' | 'onClose' | 'onSave'> & { key?: ApiKey };
-  setEditModal: (v: Omit<EditApiKeyModalProps, 'open' | 'onClose' | 'onSave'> & { key?: ApiKey }) => void;
-  handleCreateModal: () => void;
   handleModalCreate: () => void;
   handleEditModalSave: () => void;
 }
@@ -21,12 +18,9 @@ const ApiKeyModals: React.FC<ApiKeyModalsProps> = ({
   showModal,
   setShowModal,
   createModal,
-  setCreateModal,
   showEditModal,
   setShowEditModal,
   editModal,
-  setEditModal,
-  handleCreateModal,
   handleModalCreate,
   handleEditModalSave,
 }) => (

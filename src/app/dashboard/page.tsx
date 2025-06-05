@@ -17,11 +17,9 @@ export default function Dashboard() {
     showModal,
     setShowModal,
     createModal,
-    setCreateModal,
     showEditModal,
     setShowEditModal,
     editModal,
-    setEditModal,
     handleCreateModal,
     handleModalCreate,
     deleteApiKey,
@@ -47,12 +45,9 @@ export default function Dashboard() {
             showModal={showModal}
             setShowModal={setShowModal}
             createModal={createModal}
-            setCreateModal={setCreateModal}
             showEditModal={showEditModal}
             setShowEditModal={setShowEditModal}
             editModal={editModal}
-            setEditModal={setEditModal}
-            handleCreateModal={handleCreateModal}
             handleModalCreate={handleModalCreate}
             handleEditModalSave={handleEditModalSave}
           />
