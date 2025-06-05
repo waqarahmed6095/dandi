@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ApiKey } from '../types/index';
 import { supabase } from '../lib/supabaseClient';
+import toast from 'react-hot-toast';
 
 export function useApiKeys() {
   // API keys state
@@ -72,6 +73,7 @@ export function useApiKeys() {
       setApiKeys(prev => [data[0] as ApiKey, ...prev]);
       setShowModal(false);
     }
+    toast.success('API Key created!');
     setLoading(false);
   };
   const deleteApiKey = async (id: string) => {
@@ -85,6 +87,7 @@ export function useApiKeys() {
       setError(error.message);
     } else {
       setApiKeys(apiKeys.filter(key => key.id !== id));
+      toast.error('API Key deleted!');
     }
     setLoading(false);
   };
@@ -108,6 +111,7 @@ export function useApiKeys() {
           key.id === editModal.key!.id ? { ...key, name: editModal.keyName } : key
         ));
         setShowEditModal(false);
+        toast.success('API Key updated!');
       }
       setLoading(false);
     }
@@ -119,6 +123,11 @@ export function useApiKeys() {
   };
   const copyKey = (key: string) => {
     navigator.clipboard.writeText(key);
+  };
+
+  const handleCopyKey = (key: string) => {
+    copyKey(key);
+    toast.success('Copied API Key to clipboard');
   };
 
   return {
@@ -141,6 +150,7 @@ export function useApiKeys() {
     handleEditModalSave,
     toggleShowKey,
     copyKey,
+    handleCopyKey,
     loading,
     error,
   };

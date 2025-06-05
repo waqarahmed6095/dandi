@@ -1,6 +1,7 @@
 import React from "react";
 import { FiEye, FiCopy, FiEdit2, FiTrash2, FiEyeOff } from 'react-icons/fi';
 import { ApiKey } from '../types/index';
+import ApiKeyRow from './rows/ApiKeyRow';
 
 interface ApiKeysTableProps {
   apiKeys: ApiKey[];
@@ -33,53 +34,16 @@ const ApiKeysTable: React.FC<ApiKeysTableProps> = ({ apiKeys, showKeyIds, maskKe
           </tr>
         )}
         {apiKeys.map((apiKey) => (
-          <tr key={apiKey.id} className="bg-[#f3f6fa] rounded-lg text-[#1a2233]">
-            <td className="px-4 py-3 rounded-l-lg font-medium text-base">{apiKey.name}</td>
-            <td className="px-4 py-3">
-              <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-semibold border border-blue-200">
-                {apiKey.type}
-              </span>
-            </td>
-            <td className="px-4 py-3 text-center font-semibold text-gray-700">{apiKey.usage}</td>
-            <td className="px-4 py-3 font-mono">
-              <input
-                type={showKeyIds.includes(apiKey.id) ? "text" : "text"}
-                value={showKeyIds.includes(apiKey.id) ? apiKey.key : maskKey(apiKey.key)}
-                readOnly
-                className="w-full bg-[#e9eef5] border border-[#d1d5db] rounded px-2 py-1 text-sm font-mono text-[#1a2233]"
-              />
-            </td>
-            <td className="px-4 py-3 flex items-center gap-3 justify-center rounded-r-lg">
-              <button
-                className="text-gray-500 hover:text-blue-600 transition-colors"
-                title={showKeyIds.includes(apiKey.id) ? "Hide" : "Show"}
-                onClick={() => onToggleShowKey(apiKey.id)}
-              >
-                {showKeyIds.includes(apiKey.id) ? <FiEyeOff /> : <FiEye />}
-              </button>
-              <button
-                className="text-gray-500 hover:text-blue-600 transition-colors"
-                title="Copy"
-                onClick={() => onCopyKey(apiKey.key)}
-              >
-                <FiCopy />
-              </button>
-              <button
-                className="text-gray-500 hover:text-blue-600 transition-colors"
-                title="Edit"
-                onClick={() => onEdit(apiKey)}
-              >
-                <FiEdit2 />
-              </button>
-              <button
-                className="text-red-500 hover:text-red-700 transition-colors"
-                title="Delete"
-                onClick={() => onDelete(apiKey.id)}
-              >
-                <FiTrash2 />
-              </button>
-            </td>
-          </tr>
+          <ApiKeyRow
+            key={apiKey.id}
+            apiKey={apiKey}
+            showKey={showKeyIds.includes(apiKey.id)}
+            maskKey={maskKey}
+            onToggleShowKey={onToggleShowKey}
+            onCopyKey={onCopyKey}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
         ))}
       </tbody>
     </table>
