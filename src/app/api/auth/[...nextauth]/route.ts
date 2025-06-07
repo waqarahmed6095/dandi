@@ -1,9 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { supabase } from "../../../../app/dashboard/lib/supabaseClient";
 
 // Define your auth options
-export const authOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -11,7 +11,7 @@ export const authOptions = {
     }),
   ],
   events: {
-    async signIn({ user }: { user: { email?: string; name?: string; image?: string } }) {
+    async signIn({ user, account, profile, isNewUser }) {
       // Check if user already exists in Supabase
       const { data } = await supabase
         .from("users")
@@ -31,10 +31,8 @@ export const authOptions = {
         ]);
         if (insertError) {
           console.error("Error inserting user:", insertError);
-          // Optionally, return false to block sign-in
         }
       }
-      return true; // Allow sign-in
     },
   },
   // ...any other NextAuth options (callbacks, etc)
