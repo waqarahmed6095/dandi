@@ -11,7 +11,7 @@ export const authOptions: AuthOptions = {
     }),
   ],
   events: {
-    async signIn({ user, account, profile, isNewUser }) {
+    async signIn({ user }) {
       // Check if user already exists in Supabase
       const { data } = await supabase
         .from("users")

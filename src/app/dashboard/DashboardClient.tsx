@@ -7,9 +7,8 @@ import Sidebar from './components/Sidebar';
 import DashboardHeader from './layout/DashboardHeader';
 import ApiKeyModals from './layout/ApiKeyModals';
 import ApiKeysCard from './layout/ApiKeysCard';
-import { Session } from "next-auth";
 
-export default function DashboardClient({ session }: { session: Session }) {
+export default function DashboardClient() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const {
     apiKeys,

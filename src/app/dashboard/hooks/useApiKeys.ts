@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { ApiKey, EditApiKeyModalProps, CreateApiKeyModalProps } from '../types/index';
-import { supabase } from '../lib/supabaseClient';
 import toast from 'react-hot-toast';
 
 export function useApiKeys() {
@@ -38,19 +37,20 @@ export function useApiKeys() {
     setPii: (v: boolean) => setEditModal(prev => ({ ...prev, pii: v }))
   });
 
-  // Fetch API keys from Supabase on mount
+  // Fetch API keys from the API on mount
   useEffect(() => {
     const fetchApiKeys = async () => {
       setLoading(true);
       setError(null);
-      const { data, error } = await supabase
-        .from('api_keys')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) {
-        setError(error.message);
-      } else {
-        setApiKeys(data as ApiKey[]);
+      try {
+        const response = await fetch('/api/keys', { credentials: 'include' });
+        if (!response.ok) {
+          throw new Error('Failed to fetch API keys');
+        }
+        const data = await response.json();
+        setApiKeys(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
       }
       setLoading(false);
     };
@@ -71,44 +71,60 @@ export function useApiKeys() {
       setUsageLimit: (v: string) => setCreateModal(prev => ({ ...prev, usageLimit: v }))
     });
   };
+
   const handleModalCreate = async () => {
     setLoading(true);
     setError(null);
-    const newKey: Omit<ApiKey, 'id'> = {
-      name: createModal.keyName || 'default',
-      type: createModal.keyType,
-      usage: 0,
-      key: `dandi-${Math.random().toString(36).substr(2, 8)}n6t9`,
-      created_at: new Date().toISOString(),
-    };
-    const { data, error } = await supabase
-      .from('api_keys')
-      .insert([newKey])
-      .select();
-    if (error) {
-      setError(error.message);
-    } else if (data && data.length > 0) {
-      setApiKeys(prev => [data[0] as ApiKey, ...prev]);
+    try {
+      const response = await fetch('/api/keys', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: createModal.keyName || 'default',
+          type: createModal.keyType
+        }),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create API key');
+      }
+
+      const data = await response.json();
+      setApiKeys(prev => [data, ...prev]);
       setShowModal(false);
+      toast.success('API Key created!');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      toast.error('Failed to create API key');
     }
-    toast.success('API Key created!');
     setLoading(false);
   };
+
   const deleteApiKey = async (id: string) => {
     setLoading(true);
     setError(null);
-    const { error } = await supabase
-      .from('api_keys')
-      .delete()
-      .eq('id', id);
-    if (error) {
-      setError(error.message);
-    } else {
+    try {
+      const response = await fetch(`/api/keys/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete API key');
+      }
+
       setApiKeys(apiKeys.filter(key => key.id !== id));
       toast.error('API Key deleted!');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      toast.error('Failed to delete API key');
     }
     setLoading(false);
   };
+
   const openEditModal = (apiKey: ApiKey) => {
     setEditModal({
       key: apiKey,
@@ -124,32 +140,48 @@ export function useApiKeys() {
     });
     setShowEditModal(true);
   };
+
   const handleEditModalSave = async () => {
     if (editModal.key) {
       setLoading(true);
       setError(null);
-      const { data, error } = await supabase
-        .from('api_keys')
-        .update({ name: editModal.keyName })
-        .eq('id', editModal.key.id)
-        .select();
-      if (error) {
-        setError(error.message);
-      } else if (data && data.length > 0) {
+      try {
+        const response = await fetch(`/api/keys/${editModal.key.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: editModal.keyName,
+            type: editModal.keyType
+          }),
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update API key');
+        }
+
+        const data = await response.json();
         setApiKeys(apiKeys.map(key =>
-          key.id === editModal.key!.id ? { ...key, name: editModal.keyName } : key
+          key.id === editModal.key!.id ? data : key
         ));
         setShowEditModal(false);
         toast.success('API Key updated!');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        toast.error('Failed to update API key');
       }
       setLoading(false);
     }
   };
+
   const toggleShowKey = (id: string) => {
     setShowKeyIds(prev =>
       prev.includes(id) ? prev.filter(k => k !== id) : [...prev, id]
     );
   };
+
   const copyKey = (key: string) => {
     navigator.clipboard.writeText(key);
   };
