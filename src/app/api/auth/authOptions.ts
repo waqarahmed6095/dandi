@@ -1,6 +1,6 @@
-import { AuthOptions, User } from "next-auth";
+import { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { supabase } from "../../../app/dashboard/lib/supabaseClient";
+import { supabase } from "../../dashboard/lib/supabaseClient";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -10,7 +10,8 @@ export const authOptions: AuthOptions = {
     }),
   ],
   events: {
-    async signIn({ user }: { user: User }) {
+    async signIn({ user }) {
+      // Check if user already exists in Supabase
       const { data } = await supabase
         .from("users")
         .select("id")
@@ -18,11 +19,13 @@ export const authOptions: AuthOptions = {
         .single();
 
       if (!data) {
+        // Insert new user
         const { error: insertError } = await supabase.from("users").insert([
           {
             email: user.email,
             name: user.name,
             image: user.image,
+            // add other fields as needed
           },
         ]);
         if (insertError) {
